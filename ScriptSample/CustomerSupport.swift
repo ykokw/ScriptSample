@@ -15,12 +15,37 @@
  */
 
 import UIKit
+import NCMB
 
 class CustomerSupportViewController: UIViewController {
+    @IBOutlet weak var mailAddress: UITextField!
+    @IBOutlet weak var messageField: UITextView!
+    @IBOutlet weak var resultLabel: UILabel!
     
+    @IBAction func submit(sender: AnyObject) {
+        let script = NCMBScript.init(name: "CustomerSupport.js", method:NCMBScriptRequestMethod.ExecuteWithPostMethod)
+        script.execute(["mailAddress":mailAddress.text!,"message":messageField.text], headers: nil, queries: nil, withBlock: { (result, error) in
+            if error != nil {
+                print("error:", error)
+            } else {
+                do {
+                    let json = try NSJSONSerialization.JSONObjectWithData(result, options: .MutableContainers) as! [String: String]
+                    self.resultLabel.text = json["result"]
+                }
+                catch{
+                    print("json parse error")
+                }
+                
+            }
+        })
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        messageField.layer.cornerRadius = 5.0
+        messageField.layer.masksToBounds = false
+        messageField.layer.borderWidth = 1
+        messageField.layer.borderColor = UIColor.init(red: 0.7, green: 0.7, blue: 0.7, alpha: 0.5).CGColor
     }
     
     override func didReceiveMemoryWarning() {

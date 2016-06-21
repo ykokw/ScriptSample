@@ -22,19 +22,7 @@ class GettingStartedViewController: UIViewController {
     @IBOutlet weak var name: UITextField!
     @IBAction func executeScript(sender: AnyObject) {
         
-        let script = NCMBScript.init(name: "testScript_GET.js",
-                                     method:NCMBScriptRequestMethod.ExecuteWithGetMethod)
-        script.execute(nil,
-                       headers: nil,
-                       queries: ["name":name.text!],
-                       withBlock: { (result, error) in
-            if error != nil {
-                print("error:" + error.description)
-            } else {
-                self.resultLabel.text = String(data: result,
-                                               encoding: NSUTF8StringEncoding)
-            }
-        })
+        //testScript_GET.jsを呼び出す
     }
     
     override func viewDidLoad() {

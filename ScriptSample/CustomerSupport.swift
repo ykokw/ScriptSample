@@ -23,26 +23,8 @@ class CustomerSupportViewController: UIViewController {
     @IBOutlet weak var resultLabel: UILabel!
     
     @IBAction func submit(sender: AnyObject) {
-        let script = NCMBScript.init(name: "CustomerSupport.js",
-                                     method:NCMBScriptRequestMethod.ExecuteWithPostMethod)
-        script.execute(["mailAddress":mailAddress.text!,"message":messageField.text],
-                       headers: nil,
-                       queries: nil,
-                       withBlock: { (result, error) in
-            if error != nil {
-                print("error:" + error.description)
-            } else {
-                do {
-                    let json = try NSJSONSerialization.JSONObjectWithData(result,
-                        options: .MutableContainers) as! [String: String]
-                    self.resultLabel.text = json["result"]
-                }
-                catch{
-                    print("json parse error")
-                }
-                
-            }
-        })
+        
+        //CustomerSupport.jsを呼び出す
     }
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -20,6 +20,8 @@ module.exports = function(req, res){
 
   const mailAddress = req.body.mailAddress;
   const message = req.body.message;
+
+  //NCMBのAPIキーを設定
   const ncmb = new NCMB(
     "YOUR_APP_KEY",
     "YOUR_CLIENT_KEY"
@@ -31,14 +33,22 @@ module.exports = function(req, res){
   });
   ticket.save()
     .then(function(apple){
+
+      //SlackのWebhook URLを設定
       const url = "https://YOUR_INCOMING_WEBHOOK_URL"
+
+      //登録がうまくいった場合に、slackへの通知を行う
       request.post(url)
       .send({text: "new message is arrived!"})
       .end(function (err, response) {
         if (err != null) {
-          res.status(400).set({"Content-type":"application/json"}).json({"error":err});
+          res.status(400)
+            .set({"Content-type":"application/json"})
+            .json({"error":err});
         } else {
-          res.status(200).set({"Content-type":"application/json"}).json({"result":"success."});
+          res.status(200)
+            .set({"Content-type":"application/json"})
+            .json({"result":"success."});
         }
       });
     })

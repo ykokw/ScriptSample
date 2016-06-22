@@ -32,37 +32,35 @@ module.exports = function(req, res){
     message: message
   });
   ticket.save()
-    .then(function(apple){
+    .then(function(ticket){
+      const apiKey = 'YOUR_API_KEY';
+      const to = mailAddress;
+      const from = 'no-reply@example.app.com';
+      const subject = '問い合わせを受け付けました';
+      const message = 'Sampleアプリのご利用ありがとうございます。\nお客様の問い合わせを受け付けました。弊社のスタッフが確認次第、ご連絡差し上げます。'
+      const data = 'to=' + to + '&from=' + from + '&subject=' + subject + '&text=' + message;
+      request
+        .post('https://api.sendgrid.com/api/mail.send.json')
+        .set('Authorization', 'Bearer ' + apiKey)
+        .send(data)
+        .end(function(err, response) {
+          //SlackのWebhook URLを設定
+          const url = "https://YOUR_INCOMING_WEBHOOK_URL"
 
-      //SlackのWebhook URLを設定
-      const url = "https://YOUR_INCOMING_WEBHOOK_URL"
-
-      //登録がうまくいった場合に、slackへの通知を行う
-      request.post(url)
-      .send({text: "new message is arrived!"})
-      .end(function (err, response) {
-        if (err != null) {
-          res.status(400)
-            .set({"Content-type":"application/json"})
-            .json({"error":err});
-        } else {
-          const apiKey = 'YOUR_API_KEY';
-          const to = mailAddress;
-          const from = 'no-reply@example.app.com';
-          const subject = '問い合わせを受け付けました';
-          const message = 'Sampleアプリのご利用ありがとうございます。\nお客様の問い合わせを受け付けました。弊社のスタッフが確認次第、ご連絡差し上げます。'
-          const data = 'to=' + to + '&from=' + from + '&subject=' + subject + '&text=' + message;
-          request
-            .post('https://api.sendgrid.com/api/mail.send.json')
-            .set('Authorization', 'Bearer ' + apiKey)
-            .send(data)
-            .end(function(err, response) {
+          //登録がうまくいった場合に、slackへの通知を行う
+          request.post(url)
+          .send({text: "new message is arrived!"})
+          .end(function (err, response) {
+            if (err != null) {
+              res.status(400)
+                .set({"Content-type":"application/json"})
+                .json({"error":err});
+            } else {
               res.status(200)
                 .set({"Content-type":"application/json"})
-                .json({"result":"success."});
-              }
-            );
-        }
+                .json({"result":"success!"});
+            }
+          });
       });
     })
     .catch(function(err){

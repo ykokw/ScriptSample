@@ -46,9 +46,22 @@ module.exports = function(req, res){
             .set({"Content-type":"application/json"})
             .json({"error":err});
         } else {
-          res.status(200)
-            .set({"Content-type":"application/json"})
-            .json({"result":"success."});
+          const apiKey = 'YOUR_API_KEY';
+          const to = mailAddress;
+          const from = 'no-reply@example.app.com';
+          const subject = '問い合わせを受け付けました';
+          const message = 'Sampleアプリのご利用ありがとうございます。\nお客様の問い合わせを受け付けました。弊社のスタッフが確認次第、ご連絡差し上げます。'
+          const data = 'to=' + to + '&from=' + from + '&subject=' + subject + '&text=' + message;
+          request
+            .post('https://api.sendgrid.com/api/mail.send.json')
+            .set('Authorization', 'Bearer ' + apiKey)
+            .send(data)
+            .end(function(err, response) {
+              res.status(200)
+                .set({"Content-type":"application/json"})
+                .json({"result":"success."});
+              }
+            );
         }
       });
     })

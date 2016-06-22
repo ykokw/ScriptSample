@@ -23,8 +23,8 @@ module.exports = function(req, res){
 
   //NCMBのAPIキーを設定
   const ncmb = new NCMB(
-    "YOUR_APP_KEY",
-    "YOUR_CLIENT_KEY"
+    "YOUR_NCMB_APPLICATION_KEY",
+    "YOUR_NCMB_CLIENT_KEY"
   );
   const Ticket = ncmb.DataStore("Tickets");
   const ticket = new Ticket({
@@ -33,19 +33,20 @@ module.exports = function(req, res){
   });
   ticket.save()
     .then(function(ticket){
-      const apiKey = 'YOUR_API_KEY';
+      const apiKey = 'YOUR_SENDGRID_API_KEY';
       const to = mailAddress;
       const from = 'no-reply@example.app.com';
       const subject = '問い合わせを受け付けました';
-      const message = 'Sampleアプリのご利用ありがとうございます。\nお客様の問い合わせを受け付けました。弊社のスタッフが確認次第、ご連絡差し上げます。'
-      const data = 'to=' + to + '&from=' + from + '&subject=' + subject + '&text=' + message;
+      const message = 'Sampleアプリのご利用ありがとうございます。';
+      const data = 'to=' + to + '&from=' + from
+       + '&subject=' + subject + '&text=' + message;
       request
         .post('https://api.sendgrid.com/api/mail.send.json')
         .set('Authorization', 'Bearer ' + apiKey)
         .send(data)
         .end(function(err, response) {
           //SlackのWebhook URLを設定
-          const url = "https://YOUR_INCOMING_WEBHOOK_URL"
+          const url = "YOUR_INCOMING_WEBHOOK_URL"
 
           //登録がうまくいった場合に、slackへの通知を行う
           request.post(url)
